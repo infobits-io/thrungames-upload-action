@@ -1,0 +1,33 @@
+name: Upload to Thrungames
+description: Upload a game build to Thrungames as a draft, or straight to review.
+author: Infobits
+branding:
+  icon: upload-cloud
+  color: purple
+inputs:
+  token:
+    description: An upload token for your game (create one with `thrungames tokens create` or on your game's page). Store it as a secret.
+    required: true
+  path:
+    description: Folder or .zip to upload. Defaults to game.json's "root", else the repository root.
+    required: false
+    default: ""
+  version:
+    description: Version name. Defaults to game.json's "version"; required if game.json has none (the image has no git, so it cannot be guessed).
+    required: false
+    default: ""
+  submit:
+    description: Send the build to review instead of saving a draft.
+    required: false
+    default: "false"
+outputs: {}
+runs:
+  using: docker
+  # Major tag: the action's v1 tracks the CLI's 1.x images.
+  image: docker://infobits/thrungames-cli:1
+  args: ["upload"]
+  env:
+    THRUNGAMES_TOKEN: ${{ inputs.token }}
+    THRUNGAMES_PATH: ${{ inputs.path }}
+    THRUNGAMES_VERSION: ${{ inputs.version }}
+    THRUNGAMES_SUBMIT: ${{ inputs.submit }}
